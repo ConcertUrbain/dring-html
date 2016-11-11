@@ -4,7 +4,7 @@ Social web-app
 
 HTML5 version of the flash app.
 
-There are wwo versions : 
+There are two versions : 
 - dring13.html (original design of the Dring13 Flash front)
 - dring.html (new design)
 
