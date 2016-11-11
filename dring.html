@@ -1,0 +1,415 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset='UTF-8'>
+	<title>Dring</title>
+	<link rel='stylesheet' href='styles/dring2016.css' type='text/css' />
+	<link rel='stylesheet' href='https://npmcdn.com/leaflet@1.0.0-rc.1/dist/leaflet.css' type='text/css' />
+	<link rel='stylesheet' href='styles/mediaelement/mediaelementplayer.min.css' type='text/css' />
+	<link rel='stylesheet' href='styles/leaflet/MarkerCluster.css' type='text/css' />
+	<link rel='stylesheet' href='styles/leaflet/MarkerCluster.Default.css' type='text/css' />    
+</head>
+<body>
+	
+	<!--  -->
+	<!-- TEMPLATES -->
+	<!--  -->
+
+	<script id="queryTemplate" type="text/template">
+		<div class="queryTitre inactive" data-id="<%= id %>"><p><a href="#"><%= content %></a></p></div>
+    </script>
+    
+	<script id="itemTemplate" type="text/template">
+		<div class="dringItem itemTitre"><a href="#"><%= title %></a></div>
+    </script>
+    
+	<script id="dringTemplate" type="text/template">
+		<div class="dringItem itemTitre item<%= id %>"  data-id="<%= id %>" style="position:absolute;left:<%= left %>px;top:<%= top %>px">
+			<div class="parent_perso_svg">
+				<a href="#">
+					<svg class="perso_svg">
+					<g><path class="perso_path" fill="<%= color %>" stroke="none" d="M 29.95 19 L 26.5 14.45 21.9 14.45 Q 21.65 14.75 21.35 15.05 19.1 17.3 16 17.3 12.95 17.3 10.65 15.05 10.35 14.75 10.1 14.45 L 4.25 14.45 1.9 18.7 1.75 41.35 7.25 41.4 7.2 22.6 8.85 22.6 8.7 70.15 14.5 70.15 14.5 43.5 17.15 43.5 17.15 70.2 22.85 70.2 22.8 22.7 24.55 22.7 24.55 41.5 30.15 41.5 29.95 19 Z"/></g>
+					<g><path class="perso_path" fill="<%= color %>" stroke="none" d="M 20.05 13.8 Q 21.75 12.15 21.75 9.75 21.75 7.4 20.05 5.7 18.35 4 16 4 13.65 4 11.9 5.7 10.25 7.4 10.25 9.75 10.25 12.15 11.9 13.8 13.65 15.5 16 15.5 18.35 15.5 20.05 13.8 Z"/></g>
+					<g><path id="<%= id %>" class="perso perso<%= id %>" fill="<%= visitedColor %>" stroke="none" d="M 26 80 8 80 8 74 26 74Z"/></g>
+					</svg>
+				</a>
+			</div>
+		</div>
+    </script>
+    
+   	<script id="dringUserTemplate" type="text/template">
+		<div class="dringItem user">
+			<div class="userParent">
+				<div class="userItemsParent"></div>
+				<div class="userName user<%= id %>"  data-id="<%= id %>" >
+					<a href="#"><%= pseudo %></a>
+				</div>
+			</div>
+		</div>
+    </script>
+    
+   	<script id="dringMotCleTemplate" type="text/template">
+		<div class="dringItem motCle">
+			<div class="motCleParent">
+				<div class="motCleTitle motCle<%= id %>" data-id="<%= id %>" >
+					<a href="#"><%= content %></a>
+				</div>
+				<div class="motCleItemsParent">
+				</div>
+			</div>
+		</div>
+    </script>
+    
+	<script id="dringUserItemTemplate" type="text/template">
+		<div class="dringItem itemTitre item<%= id %>"  data-id="<%= id %>" style="position:absolute;left:<%= left %>px;top:<%= top %>px;transform:rotate(<%= angle %>deg);transform-origin:8px 30px 0px;">
+			<div class="parent_perso_svg">
+				<a href="#">
+					<svg class="perso_svg">
+					<g><path class="perso_path" fill="<%= color %>" stroke="none" d="M 29.95 19 L 26.5 14.45 21.9 14.45 Q 21.65 14.75 21.35 15.05 19.1 17.3 16 17.3 12.95 17.3 10.65 15.05 10.35 14.75 10.1 14.45 L 4.25 14.45 1.9 18.7 1.75 41.35 7.25 41.4 7.2 22.6 8.85 22.6 8.7 70.15 14.5 70.15 14.5 43.5 17.15 43.5 17.15 70.2 22.85 70.2 22.8 22.7 24.55 22.7 24.55 41.5 30.15 41.5 29.95 19 Z"/></g>
+					<g><path class="perso_path" fill="<%= color %>" stroke="none" d="M 20.05 13.8 Q 21.75 12.15 21.75 9.75 21.75 7.4 20.05 5.7 18.35 4 16 4 13.65 4 11.9 5.7 10.25 7.4 10.25 9.75 10.25 12.15 11.9 13.8 13.65 15.5 16 15.5 18.35 15.5 20.05 13.8 Z"/></g>
+					<g><path id="<%= id %>" class="perso perso<%= id %>" fill="<%= visitedColor %>" stroke="none" d="M 26 80 8 80 8 74 26 74Z"/></g>
+					</svg>
+				</a>
+			</div>
+		</div>
+    </script>
+    
+	<script id="dringMapTemplate" type="text/template">
+		<div class="dringItem itemTitre item<%= id %>"  data-id="<%= id %>" style="position:absolute;left:<%= mapLeft %>px;top:<%= mapTop %>px">
+			<a href="#"><img src='images/persoHomme.png' alt='<%= title %>' /></a>
+		</div>
+    </script>
+    
+	<script id="popUpTemplate" type="text/template">
+		<div class="popupBg"></div>
+		<div class="popupContent">
+			<div class="popupHeader">
+				<div class="popupClose">x</div>
+			</div>
+			<div class="popupMediaBorder">
+			</div>
+			<div class="popupMedia">
+				<div class="popupMediaPlayer"></div>
+			</div>
+			<div class="popupHeaderComment">Donnez votre avis et votez "COOL" ou "PAS COOL"</div> 
+			<div class="popupInputComment">
+				<textarea type="text" id="newComment"></textarea>
+			</div>
+			<div class="popupButtons">
+				<button class="voteButton cool"><%= choix1 %></button>
+				<button class="voteButton pasCool"><%= choix2 %></button>
+			</div>
+			<div class="popupComments" id="comments">
+			</div>
+		</div>
+    </script>
+    
+	<script id="commentTemplate" type="text/template">
+		<div class="comment <%= bgcolor %>"><p><%= content %></p>
+    </script>
+    
+	<script id="textMediaTemplate" type="text/template">
+        <div class='textMedia'><%= content %></div>
+    </script>
+
+	<script id="imageTemplate" type="text/template">
+		<img src='<%= url %>' alt='' />
+    </script>
+    
+	<script id="videoTemplate" type="text/template">
+		<video width='<%= width %>' height='<%= height %>' id='playervideo' <%= html5options %> >
+			<source src='<%= url %>' type='video/mp4' />
+		</video>
+    </script>
+
+	<script id="uploadFormTemplate" type="text/template">
+		<div class="uploadRelative">
+			<div class="uploadBg"></div>
+			<div class="uploadContent">
+				<div class="uploadHeader">
+					<div class="uploadClose">x</div>
+					<div class="headerTitle">Un appel pour lutter contre les discriminations</div>
+				</div>
+				<div class="uploadBody">		
+					<div id="etape_user" class="etape_user">
+						<div class="tabLoginInscription">
+							<div class="login selected">Se connecter</div>
+							<div class="inscription">S&apos;inscrire</div>
+						</div>
+						<div>
+							<div class="loginForm">
+								<form id="loginForm">
+								
+									<div class="elementForm">
+										<span class="label">Votre pseudo : </span><input type="input" id="pseudo" name="pseudo" value="" />
+									</div>
+									<div class="elementForm">
+										<span class="label">Votre mot de passe : </span><input type="password" id="password" name="password"  />
+									</div>
+									<div class="elementForm">
+										<p id="loginError" class="loginError"></p>
+									</div>
+									<div class="elementForm">
+										<button type="submit" id="login-button">Se connecter</button>
+									</div>
+									
+								</form>
+							</div>
+							<div class="inscriptionForm">
+								<form id="inscriptionForm">
+								
+									<div class="elementForm">
+										<span class="label">Votre nom : </span><input type="input" id="adduser_nom" name="adduser_nom" value="" />
+									</div>
+									
+									<div class="elementForm">
+										<span class="label">Votre prénom : </span><input type="input" id="adduser_prenom" name="adduser_prenom" value="" />
+									</div>
+									
+									<div class="elementForm">
+										<span class="label">Votre pseudo (*) : </span><input type="input" id="adduser_pseudo" name="adduser_pseudo" value="" />
+									</div>
+									
+									<div class="elementForm">
+										<span class="label">Votre mot de passe (*): </span><input type="password" id="adduser_password" name="adduser_password"  />
+									</div>
+									
+									<div class="elementForm">
+										<span class="label">Votre email : </span><input type="input" id="adduser_email" name="adduser_email" value="" />
+									</div>
+									<div class="elementForm">
+										<p>(*) champs obligatoires</p>
+									</div>
+									
+									<div class="elementForm">
+										<button type="submit" id="inscription-button">S&apos;inscrire</button>
+									</div>
+									
+								</form>
+							</div>
+						</div>
+					</div>
+					
+					<div id="etape_upload" class="etape_upload" style="display:none">
+						<div id="uploadForm" class="uploadForm">
+						
+							<div class="elementForm">
+								<p class="rubrique">A quelle question répondez-vous ?</p>
+								<select id="formQueries" name="queries" />
+							</div>
+							
+							<div class="elementForm">
+								<p class="rubrique">Titre de votre témoignage :</p>
+								<input type="input" id="itemTitle" name="itemTitle" value="" />
+								<!-- <p class="sousrubrique">Faites attention que votre témoignage ne traite que d&apos;une idée, avec un parti pris clair.<br/>Cela permettra à chacun de bien cibler sa réponse.</p> -->
+							</div>
+							
+							<div class="elementForm">
+								<p class="rubrique principale">Choisissez une des deux options :</p>
+								<p class="rubrique"><span class="no">1. </span>Poster votre média (jpeg, png, mp3, mp4) :
+									<br/>
+									<span class="sousrubrique">Attention : le poids de votre media ne doit pas dépasser 20 Mo.</span>
+								</p>
+								
+								<form id="fileUploadForm" enctype="multipart/form-data" method="POST">
+									<input type="file" id="fileSelect" name="file[]" />
+									<button type="submit" id="uploadButton">Envoyer votre media</button>
+									<p class="uploadStatus"></p>
+								</form>
+								<div class="envoiTexte">
+									<p class="rubrique"><span class="no">2. </span>Ou poster un témoignage écrit directement ici :</p>
+									<textarea type="text" id="newTextMedia"></textarea>
+									<button type="submit" id="sendTextMediaButton">Envoyer votre texte</button>
+								</div>
+							</div>
+						</div>
+						
+						<div id="uploadedMedia" class="uploadedMedia">
+							<div class="mediaParent"></div>
+						</div>
+						
+						<div class="buttonFooter">
+							<p class="etape etape2">1/4</p>
+							<div class="buttonParent">
+								<button id="toEtape2Button">SUITE</button>
+							</div>
+						</div>
+					</div>
+					
+					<div id="etape_vote" class="etape_vote" style="display:none">
+						<p class="rubrique principale">Choisissez :</p>
+						<div class="inputs">
+							<div class="etape_vote_text">
+								<p>Ce choix place votre témoignage sur la mosaïque interactive, ouverte aux réactions et votes de ceux qui participent au dialogue.</p>
+								<p>Le choix vert &laquo; c&apos;est cool &raquo; place votre témoignage vers le haut de la mosaïque.</p>
+								<p>Le choix rouge &laquo; c&apos;est pas cool &raquo; place votre témoignage vers le bas de la mosaïque.</p>
+								<p>La mosaïque reflète la moyenne des votes.</p>
+							</div>
+							<div class="elementForm">
+								<div>
+									<input type="radio" id="coolRadio" name="sentiment" value="choix1" checked="checked"></input>
+									<label for="coolRadio" class="coolRadioLabel">D&apos;accord</label>
+								</div>
+								<div>
+									<input type="radio" id="pasCoolRadio" name="sentiment" value="choix2"></input>
+									<label for="pasCoolRadio" class="pasCoolRadioLabel">Pas d&apos;accord</label>
+								</div>
+							</div>
+						</div>
+						<div class="buttonFooter">
+							<p class="etape etape3">2/4</p>
+							<div class="buttonParent">
+								<button id="toEtape3Button">SUITE</button>
+							</div>
+						</div>
+					</div>
+					
+					<div id="etape_keyword" class="etape_keyword" style="display:none">
+						<p class="rubrique principale">Choisissez un mot-clé :</p>
+						<div id="formKeywords" class="keywords"></div>
+						<div class="etape_keyword_text">
+							<p>Le choix de mot-clé permet d&apos;organiser les témoignages par thèmes.</p>
+						</div>
+						<div class="buttonFooter">
+							<p class="etape etape4">3/4</p>
+							<div class="buttonParent">
+								<button id="toEtape4Button">SUITE</button>
+							</div>
+						</div>
+					</div>
+					
+					<div id="etape_map" class="etape_map" style="display:none">
+						<p class="rubrique principale">Placez votre témoignage sur la carte :</p>
+						<div class="formMapParent">
+							<div id="formMap" class="mapParent">
+								<img class="map" src="<%= urlCarte %>" alt="" />
+								<img class="item" src='images_dring13/persoRouge.png' alt='' />
+							</div>
+						</div>
+						<div class="buttonFooter">
+							<p class="etape etape5">4/4</p>
+							<div class="buttonParent">
+								<button id="toEtape5Button">SUITE</button>
+							</div>					
+						</div>
+					</div>
+					
+					<div id="etape_envoi" class="etape_envoi" style="display:none">
+						<p class="rubrique principale">Envoyez votre témoignage à la mosaïque de débat :</p>
+						<div class="elementForm">
+							<button type="submit" id="envoi-button">Envoyer</button>
+						</div>
+					</div>
+					
+					<div id="etape_conclusion" class="etape_conclusion" style="display:none">
+						<p class="rubrique principale">Merci !</p>
+						<br/>
+						<div class="">
+							<p class="rubrique etape etape1">Envoyer un autre média</p>
+							<button id="toEtape1Button">&gt;</button>
+						</div>					
+						<div class="">
+							<p class="rubrique etape retour">Retour</p>
+							<button id="toEtape6Button">&gt;</button>
+						</div>					
+					</div>
+				</div>
+				<div class="uploadFooter"></div>			
+			</div>
+		</div>
+    </script>
+
+
+
+
+	<!--  -->
+	<!-- HTML -->
+	<!--  -->
+
+
+</head>
+
+<body>
+	<div class="global" id="global">
+    	<div class="header">
+            <div class="title">Un appel pour lutter contre les discriminations</div>
+            <div class="content">
+                <div class="headerItem logo"></div><!-- @whitespace
+			 --><div class="headerItem perso2016"></div><!-- @whitespace
+			 --><div class="headerItem onglets items">
+                    <div class="tabs">
+                        <div class="onglet motcles"><p>Les mots-clés</p></div>
+                        <div class="onglet items"><p>Cool pas cool</p></div>
+                        <div class="onglet carte"><p>Voir la carte</p></div>
+                        <div class="onglet users"><p>Qui a envoyé ?</p></div>
+                    </div>
+                    <div class="float left aide"><p>Aide</p></div>
+                </div>
+                <div class="bgEnvoyer"></div>
+                <div id="envoyer" class="envoyer"><p>Envoyer votre témoignage<p></div>
+            </div>
+        </div>
+        <div class="mainContent">
+            <div class="questions">
+            </div>
+            <div class="questionsParent" id="queries"></div>        
+            <div class="mosaique">
+                <div class="vue" id="carte"></div>
+                <div class="vue votes" id="votes">
+                    <div class="vue_relative">
+                        <div class="bgMots">
+                            <div class="mots mot1"><p>c'est cool</p></div>
+                            <div class="mots mot2"><p>ça de discute</p></div>
+                            <div class="mots mot3"><p>c'est pas cool</p></div>                            
+                            <div class="recentsParent">
+                                <div class="recents dring2016">
+                                    <div class="left"></div>
+                                    <div class="center"></div>
+                                    <div class="right"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="items"></div>
+                    </div>
+                </div>
+                <div class="vue" id="users"></div>
+                <div class="vue" id="motcles"></div>
+            </div>
+            <div class="popup" id="popup"></div>
+            <div class="animationAttente" id="attente"></div>
+        </div>
+	
+        <div class="footer">
+            <div class="buttons">
+                <div class="plein_ecran"></div>
+            </div>
+        </div>
+		
+        <div class="uploadParent"></div>
+        
+    </div>
+
+	<script src="js/libs/jquery-2.1.1.min.js"></script>
+    <script src="js/libs/underscore-min.js"></script>
+    <script src="js/libs/underscore.strings.js"></script>
+    <script src="js/libs/backbone-min.js"></script>
+    <script src="js/libs/json2_min.js"></script>
+    <script src="js/libs/spin.min.js"></script>
+    <script src="js/libs/leaflet.js"></script>    
+    <script src="js/libs/leaflet.markercluster.js"></script>
+    
+	<script src="js/utils.js"></script>
+	<script src="js/models_backbone.js"></script>
+	<script src="js/views_backbone.js"></script>
+	<script src="js/views_controler.js"></script>
+	<script src="js/views_dring13.js"></script>
+	<script src="js/setup_dring13.js"></script>
+    
+	<script src="js/libs/mediaelement-and-player.min.js"></script>
+	<script src="js/libs/greensock/TweenMax.min.js"></script>
+    <script src="js/libs/greensock/utils/Draggable.min.js"></script>
+    <script src="js/libs/greensock/TimelineLite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.1.36/aws-sdk.js"></script>
+
+</body>
+</html>
