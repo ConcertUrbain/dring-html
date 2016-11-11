@@ -724,7 +724,8 @@ var Dring13AppView = AppView.extend({
 		// Bouton Plein écran
 		$(".plein_ecran").on("click", function() { toggleFullscreen(); });
 		
-		// Carte
+		// Carte : n'est plus utilisée...
+		this.mapURL = "medias/cartes/CARTE_DRING13.jpg";
 		this.largeurCarte = 2416;
 		this.longueurCarte = 1110;
 		this.latitudeTop = 48.834982;
@@ -732,10 +733,12 @@ var Dring13AppView = AppView.extend({
 		this.longitudeGauche = 2.304247;
 		this.longitudeDroite = 2.377739;
 		
-		// Emplacement de la carte :
+		/*
+		// ... Emplacement de la carte 
 		this.latitudeGMaps = 48.82129;
 		this.longitudeGMaps = 2.366234;
 		this.zoomGMaps = 17;
+		*/	
 		
 	
 		//

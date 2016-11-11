@@ -2013,6 +2013,8 @@ var AppView = Backbone.View.extend({
 			if (successCallback) successCallback(data.contents.result);
 		};
 		
+		if (t.proxy === undefined) t.proxy = "";
+		
 		var ajaxRequest = {
 			type: "POST",
 			url: t.proxy + t.serviceURL + "/" + serviceName + "/json",
