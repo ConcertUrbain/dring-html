@@ -253,6 +253,8 @@ Outputs:
     Value: !If [CreateApiKey, !GetAtt ChatanooApiKey.User, !Ref User]
   Password:
     Value: !If [CreateApiKey, !GetAtt ChatanooApiKey.Password, !Ref Password]
+  CDNDistribution:
+    Value: !Ref CDNDistribution
   Url:
     Value: !If
       - UseDNSRecord
